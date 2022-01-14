@@ -12,7 +12,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.teleop.CmdStartClimber;
+import frc.robot.commands.teleop.CmdStopClimber;
 import frc.robot.commands.teleop.FirstCommand;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Turret;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,15 +34,18 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Turret turret = new Turret();
+  private final Climber climber = new Climber();
 
 
 
 
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final FirstCommand m_autoCommand = new FirstCommand(m_exampleSubsystem, turret);
-  private final Command commandWhenTrue;
-  private final Command commandWhenFalse;
-  private final ConditionalCommand conditionalCommand;
+  // private final Command commandWhenTrue;
+  // private final Command commandWhenFalse;
+  // private final ConditionalCommand conditionalCommand;
+  private final Command commandClimb;
+  private final Command commandStopClimb;
 
   private final XboxController xboxController = new XboxController(0);
   private final JoystickButton xboxStart = new JoystickButton(xboxController, XboxController.Button.kStart.value);
@@ -49,9 +55,12 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    commandWhenTrue = new InstantCommand(()->condInputEntry.setBoolean(true), turret);
-    commandWhenFalse = new InstantCommand(()->condInputEntry.setBoolean(false), turret);
-    conditionalCommand = new ConditionalCommand(commandWhenTrue, commandWhenFalse, ()->xboxController.getAButton());
+    // commandWhenTrue = new InstantCommand(()->condInputEntry.setBoolean(true), turret);
+    // commandWhenFalse = new InstantCommand(()->condInputEntry.setBoolean(false), turret);
+    // conditionalCommand = new ConditionalCommand(commandWhenTrue, commandWhenFalse, ()->xboxController.getAButton());
+    commandClimb = new CmdStartClimber(climber);
+    commandStopClimb = new CmdStopClimber(climber);
+    
 
     // Configure the button bindings
     configureButtonBindings();
@@ -67,8 +76,12 @@ public class RobotContainer {
     
     // this works but not efficient
     // xboxA.whenReleased(conditionalCommand).whenPressed(conditionalCommand);
+    xboxA
+      .whileHeld(commandClimb)
+      .whenReleased(commandStopClimb);
 
-    conditionalCommand.perpetually();
+
+    // conditionalCommand.perpetually();
     xboxStart.whenPressed(m_autoCommand);
 
   }

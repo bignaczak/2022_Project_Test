@@ -9,14 +9,24 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Climber": "Subsystem",
       "/LiveWindow/ExampleSubsystem": "Subsystem",
       "/LiveWindow/Turret": "Subsystem",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler"
     }
   },
   "NetworkTables": {
+    "Climber": {
+      "open": true
+    },
+    "LiveWindow": {
+      "Climber": {
+        "open": true
+      },
+      "open": true
+    },
     "T_FirstCommand": {
-      "open": false
+      "open": true
     }
   }
 }
